@@ -1,8 +1,9 @@
-version: 1
-frontend:
-  build:
-    cmd: "npm install && npm run build"
-    dir: "/"
-  deploy:
-    dir: "dist"
-    index: "index.html"
+meta:
+  environment: node
+  toolchain:
+    name: browser
+    version: 18
+
+build:
+  artifacts:
+    "dist/*": /
