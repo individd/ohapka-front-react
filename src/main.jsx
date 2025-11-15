@@ -1,15 +1,16 @@
-import { StrictMode } from 'react'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+
 if (window.Telegram?.WebApp) {
   const tg = window.Telegram.WebApp;
-  tg.expand();
   tg.ready();
+  tg.expand();
 }
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
-)
+  </React.StrictMode>
+);

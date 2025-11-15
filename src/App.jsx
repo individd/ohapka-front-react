@@ -1,45 +1,43 @@
-import { useEffect, useState } from 'react';
-import { CartProvider } from './context/CartContext.jsx';
-import CatalogPage from './pages/CatalogPage.jsx';
-import CartPage from './pages/CartPage.jsx';
-import OrderPage from './pages/OrderPage.jsx';
-
-const tabs = [
-  { id: 'catalog', label: 'Каталог' },
-  { id: 'cart', label: 'Корзина' },
-  { id: 'order', label: 'Оформление' },
-];
+import React, { useState } from "react";
+import { Header } from "./components/Header";
+import { Home } from "./pages/Home";
+import { Catalog } from "./pages/Catalog";
+import { CartPage } from "./pages/CartPage";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('catalog');
+  const [page, setPage] = useState("catalog");
+  const [cart, setCart] = useState([]);
 
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    tg?.expand();
-  }, []);
+  function addToCart(product) {
+    setCart([...cart, product]);
+  }
+
+  function removeFromCart(id) {
+    setCart(cart.filter((i) => i.id !== id));
+  }
 
   return (
-    <CartProvider>
-      <div className="app-shell">
-        <main className="app-main">
-          {activeTab === 'catalog' && <CatalogPage />}
-          {activeTab === 'cart' && <CartPage onGoToOrder={() => setActiveTab('order')} />}
-          {activeTab === 'order' && <OrderPage />}
-        </main>
+    <div>
+      <Header />
 
-        <div id="tabbar">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              data-tab={tab.id}
-              className={activeTab === tab.id ? 'active' : ''}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </CartProvider>
+      <nav style={styles.nav}>
+        <button onClick={() => setPage("catalog")}>Каталог</button>
+        <button onClick={() => setPage("cart")}>Корзина ({cart.length})</button>
+      </nav>
+
+      {page === "home" && <Home />}
+      {page === "catalog" && <Catalog onAdd={addToCart} />}
+      {page === "cart" && <CartPage items={cart} onRemove={removeFromCart} />}
+    </div>
   );
 }
+
+const styles = {
+  nav: {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "12px 0",
+    borderBottom: "1px solid #eee",
+    background: "#fafafa"
+  }
+};
