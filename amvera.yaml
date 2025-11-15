@@ -6,4 +6,4 @@ meta:
 
 build:
   artifacts:
-    "dist/*": /
+    "dist/**": /
