@@ -1,0 +1,8 @@
+version: 1
+frontend:
+  build:
+    cmd: "npm install && npm run build"
+    dir: "/"
+  deploy:
+    dir: "dist"
+    index: "index.html"
