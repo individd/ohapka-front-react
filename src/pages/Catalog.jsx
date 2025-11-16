@@ -1,12 +1,23 @@
-import React, { useState } from "react";
-import { products } from "../data/products";
-import { ProductList } from "../components/ProductList";
+import React, { useEffect, useState } from "react";
+import ProductCard from "../components/ProductCard";
+import { fetchProducts } from "../api";
 
-export function Catalog({ onAdd }) {
+export default function Catalog() {
+  const [products, setProducts] = useState(null);
+
+  useEffect(() => {
+    fetchProducts().then((data) => setProducts(data));
+  }, []);
+
+  if (!products) {
+    return <div style={{ padding: 16 }}>Загрузка...</div>;
+  }
+
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Каталог</h2>
-      <ProductList products={products} onAdd={onAdd} />
+    <div style={{ padding: 16 }}>
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} />
+      ))}
     </div>
   );
 }

@@ -1,53 +1,48 @@
 import React from "react";
+import { useCart } from "../context/CartContext";
 
-export function ProductCard({ product, onAdd }) {
+export default function ProductCard({ product }) {
+  const { addItem } = useCart();
+
   return (
-    <div style={styles.card}>
-      <img src={product.image} style={styles.image} />
-      <div style={styles.info}>
-        <h3 style={styles.name}>{product.name}</h3>
-        <p style={styles.price}>{product.price} ₽</p>
-        <button style={styles.btn} onClick={() => onAdd(product)}>
-          Добавить
-        </button>
-      </div>
+    <div
+      style={{
+        border: "1px solid #eee",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 12,
+        background: "white",
+      }}
+    >
+      <img
+        src={product.images?.[0]}
+        alt=""
+        style={{
+          width: "100%",
+          borderRadius: 12,
+          marginBottom: 8,
+        }}
+      />
+
+      <h3 style={{ margin: "8px 0" }}>{product.name}</h3>
+
+      <p style={{ color: "#777", margin: "4px 0" }}>{product.price} ₽</p>
+
+      <button
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          background: "#2a7bf6",
+          color: "white",
+          borderRadius: 10,
+          border: "none",
+          marginTop: 10,
+          fontSize: 16,
+        }}
+        onClick={() => addItem(product, product.min || 1)}
+      >
+        Добавить
+      </button>
     </div>
   );
 }
-
-const styles = {
-  card: {
-    background: "#fff",
-    borderRadius: 12,
-    overflow: "hidden",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-    marginBottom: 16
-  },
-  image: {
-    width: "100%",
-    height: 200,
-    objectFit: "cover"
-  },
-  info: {
-    padding: 12
-  },
-  name: {
-    margin: 0,
-    fontSize: 16,
-    fontWeight: 600
-  },
-  price: {
-    margin: "6px 0",
-    fontSize: 15,
-    fontWeight: 500
-  },
-  btn: {
-    width: "100%",
-    padding: "10px 0",
-    borderRadius: 8,
-    border: "none",
-    background: "#222",
-    color: "#fff",
-    fontSize: 15
-  }
-};
