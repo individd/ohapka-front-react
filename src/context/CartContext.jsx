@@ -1,80 +1,52 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-// Структура товара в корзине:
-// { id, name, price, quantity, image }
-
-const CartContext = createContext(null);
+const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
+  const [cart, setCart] = useState([]);
 
-  function addItem(product, qty = 1) {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
+  // Добавление товара
+  const addItem = (product, qty) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+
       if (existing) {
-        return prev.map((i) =>
-          i.id === product.id
-            ? { ...i, quantity: i.quantity + qty }
-            : i
+        // если товар уже есть — увеличиваем количество
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + qty }
+            : item
         );
       }
-      return [
-        ...prev,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: qty,
-        },
-      ];
+
+      return [...prev, { ...product, quantity: qty }];
     });
-  }
-
-  function removeItem(id) {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-  }
-
-  function clearCart() {
-    setItems([]);
-  }
-
-  function setItemQuantity(id, qty) {
-    if (qty <= 0) {
-      return removeItem(id);
-    }
-    setItems((prev) =>
-      prev.map((i) =>
-        i.id === id ? { ...i, quantity: qty } : i
-      )
-    );
-  }
-
-  const total = useMemo(
-    () => items.reduce((sum, i) => sum + i.price * i.quantity, 0),
-    [items]
-  );
-
-  const value = {
-    items,
-    total,
-    addItem,
-    removeItem,
-    clearCart,
-    setItemQuantity,
   };
 
+  // Изменение количества
+  const updateQty = (id, qty) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: qty } : item
+      )
+    );
+  };
+
+  // Удаление товара
+  const removeItem = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // Очистка корзины
+  const clearCart = () => setCart([]);
+
   return (
-    <CartContext.Provider value={value}>
+    <CartContext.Provider
+      value={{ cart, addItem, updateQty, removeItem, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );
 }
 
-export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) {
-    throw new Error("useCart must be used within CartProvider");
-  }
-  return ctx;
-}
+export const useCart = () => useContext(CartContext);

@@ -1,68 +1,77 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
-import { Link } from "react-router-dom";
 
 export default function CartPage() {
-  const { items, total, setItemQuantity, removeItem } = useCart();
+  const { cart, updateQty, removeItem } = useCart();
+
+  const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
   return (
     <div style={{ padding: 16 }}>
       <h2>Корзина</h2>
 
-      {items.length === 0 && <p>Корзина пуста</p>}
+      {cart.length === 0 && <p>Корзина пуста</p>}
 
-      {items.map((item) => (
+      {cart.map((item) => (
         <div
           key={item.id}
           style={{
-            padding: 12,
             border: "1px solid #eee",
-            borderRadius: 10,
-            marginTop: 12,
-            background: "white",
+            padding: 12,
+            borderRadius: 12,
+            marginBottom: 12,
           }}
         >
-          <h4>{item.name}</h4>
-          <p>{item.price} ₽</p>
+          <h3>{item.name}</h3>
+          <p>Цена: {item.price} ₽</p>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={() => setItemQuantity(item.id, item.quantity - 1)}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button onClick={() => updateQty(item.id, item.quantity - item.step)}>
               -
             </button>
 
             <span>{item.quantity}</span>
 
-            <button onClick={() => setItemQuantity(item.id, item.quantity + 1)}>
+            <button onClick={() => updateQty(item.id, item.quantity + item.step)}>
               +
             </button>
           </div>
 
           <button
             onClick={() => removeItem(item.id)}
-            style={{ marginTop: 8, color: "red" }}
+            style={{
+              marginTop: 10,
+              padding: 6,
+              background: "red",
+              border: "none",
+              borderRadius: 6,
+              color: "white",
+            }}
           >
             Удалить
           </button>
         </div>
       ))}
 
-      {items.length > 0 && (
-        <Link to="/checkout">
-          <button
+      {cart.length > 0 && (
+        <div>
+          <h3>Итого: {total} ₽</h3>
+
+          <a
+            href="/checkout"
             style={{
-              width: "100%",
-              marginTop: 20,
-              padding: 14,
+              display: "block",
               background: "#2a7bf6",
+              padding: 12,
+              textAlign: "center",
               color: "white",
-              border: "none",
               borderRadius: 10,
-              fontSize: 17,
+              marginTop: 16,
             }}
           >
-            Перейти к оформлению – {total} ₽
-          </button>
-        </Link>
+            Оформить заказ
+          </a>
+        </div>
       )}
     </div>
   );

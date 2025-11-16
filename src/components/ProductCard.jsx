@@ -1,9 +1,11 @@
 import React from "react";
+import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ product }) {
   const image = Array.isArray(product.images)
     ? product.images[0]
     : product.images;
+  const { addItem } = useCart();
 
   return (
     <div
@@ -32,6 +34,21 @@ export default function ProductCard({ product }) {
       <p style={{ color: "#777", margin: "4px 0" }}>
         {product.price} ₽
       </p>
+      <button
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          background: "#2a7bf6",
+          color: "white",
+          borderRadius: 10,
+          border: "none",
+          marginTop: 10,
+          fontSize: 16,
+        }}
+        onClick={() => addItem(product, product.min || 1)}
+      >
+        Добавить
+      </button>
     </div>
   );
 }
