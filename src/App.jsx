@@ -5,6 +5,8 @@ import { CartProvider } from "./context/CartContext";
 import Catalog from "./pages/Catalog";
 import CartPage from "./pages/CartPage";
 import About from "./pages/About";
+import Checkout from "./pages/Checkout";
+import Success from "./pages/Success";
 
 import BottomNav from "./components/BottomNav";
 
@@ -17,6 +19,8 @@ export default function App() {
             <Route path="/" element={<Catalog />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/about" element={<About />} />
+            <Route path="/checkout" element={<Checkout />} />
+<Route path="/success" element={<Success />} />
           </Routes>
         </div>
 

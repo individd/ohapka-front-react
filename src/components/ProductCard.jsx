@@ -2,53 +2,53 @@ import React from "react";
 import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ product }) {
+  const { cart, addItem } = useCart();
+
+  // Текущий товар в корзине
+  const inCart = cart.find((item) => item.id === product.id);
+  const currentQty = inCart ? inCart.quantity : 0;
+
+  const min = Number(product.min) || 1;
+  const price = Number(product.price) || 0;
+
   const image = Array.isArray(product.images)
     ? product.images[0]
     : product.images;
-  const { addItem } = useCart();
+
+  const handleAdd = () => {
+    addItem(product, min);
+  };
 
   return (
-    <div
-      style={{
-        border: "1px solid #eee",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        background: "white",
-      }}
-    >
-      {image && (
-        <img
-          src={image}
-          alt={product.name}
-          style={{
-            width: "100%",
-            borderRadius: 12,
-            marginBottom: 8,
-          }}
-        />
-      )}
+    <div className="card">
+      <div className="card-img">
+        <img src={image} alt={product.name} />
+      </div>
 
-      <h3 style={{ margin: "8px 0" }}>{product.name}</h3>
+      <div className="card-info">
+        <p className="card-title">{product.name}</p>
 
-      <p style={{ color: "#777", margin: "4px 0" }}>
-        {product.price} ₽
-      </p>
-      <button
-        style={{
-          width: "100%",
-          padding: "10px 14px",
-          background: "#2a7bf6",
-          color: "white",
-          borderRadius: 10,
-          border: "none",
-          marginTop: 10,
-          fontSize: 16,
-        }}
-        onClick={() => addItem(product, product.min || 1)}
-      >
-        Добавить
-      </button>
+        <div className="price-pill">
+          {price.toLocaleString("ru-RU")} ₽ / {min} шт
+        </div>
+
+        {currentQty > 0 && (
+          <div
+            style={{
+              fontSize: "11px",
+              marginTop: 4,
+              color: "#007aff",
+              fontWeight: 600,
+            }}
+          >
+            В корзине: {currentQty} шт
+          </div>
+        )}
+
+        <button className="add-btn" onClick={handleAdd}>
+          В корзину
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,158 @@
+/* База */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, system-ui, -system-ui, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #ffffff; /* обычный белый фон */
+  color: #111111;
+}
+
+/* Страница */
+
+.page {
+  min-height: 100vh;
+  padding: 12px 12px 64px; /* снизу запас под нижнее меню */
+  background: #ffffff;
+}
+
+/* Заголовок каталога */
+
+.catalog-header {
+  margin-bottom: 12px;
+}
+
+.catalog-title {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.catalog-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: #777777;
+}
+
+/* Сетка карточек: 2 плитки в ряд */
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Карточка товара */
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Картинка - квадрат */
+
+.card-img {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* квадрат */
+  overflow: hidden;
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Текстовая часть */
+
+.card-info {
+  padding: 8px 10px 10px;
+}
+
+.card-title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Плашка цены */
+
+.price-pill {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f3f3f3;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Кнопка "В корзину" */
+
+.add-btn {
+  margin-top: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+
+  background: #111111;
+  color: #ffffff;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.08s ease;
+}
+
+.add-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  opacity: 0.85;
+}
+
+/* Нижнее меню (если были стили – оставим базу на всякий случай) */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: #ffffff;
+  border-top: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 11px;
+}
+
+.bottom-nav button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #666666;
+}
+
+.bottom-nav button.active {
+  color: #007aff;
+  font-weight: 600;
+}
