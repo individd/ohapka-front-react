@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +55,7 @@ export default function Checkout() {
 
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Фиксированные слоты
   const deliverySlots = [
@@ -109,14 +109,19 @@ export default function Checkout() {
     n.toLocaleString("ru-RU", { minimumFractionDigits: 0 });
 
   async function submitOrder() {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     // Защита от выбора прошедшей даты (например, если min обойти)
     if (date < today) {
       setDate(today);
       alert("Нельзя выбрать прошедшую дату доставки");
+      setIsSubmitting(false);
       return;
     }
     if (!name || !address || !date || !selectedSlot) {
       alert("Заполните все обязательные поля");
+      setIsSubmitting(false);
       return;
     }
 
@@ -130,6 +135,7 @@ export default function Checkout() {
 
     if (localPhone.length < 10) {
       alert("Введите корректный номер телефона");
+      setIsSubmitting(false);
       return;
     }
 
@@ -172,13 +178,22 @@ export default function Checkout() {
     } catch (e) {
       console.error(e);
       alert("Не удалось оформить заказ. Попробуйте позже.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <div style={{ paddingBottom: 130 }}>
-
-      <div style={{ padding: 16 }}>
+    <div
+      style={{
+        paddingLeft: "20px",
+        paddingRight: "20px",
+        paddingTop: "0px",
+        paddingBottom: "140px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ paddingTop: 16 }}>
         {/* Имя */}
         <input
           type="text"
@@ -210,7 +225,7 @@ export default function Checkout() {
         />
 
         {/* Дата */}
-        <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
+        <label style={{ fontSize: 16, marginTop: 12, display: "block" }}>
           Дата доставки:
         </label>
         <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
@@ -280,7 +295,7 @@ export default function Checkout() {
         />
 
         {/* Слоты */}
-        <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
+        <label style={{ fontSize: 16, marginTop: 12, display: "block" }}>
           Слот для доставки:
         </label>
 
@@ -315,7 +330,7 @@ export default function Checkout() {
           placeholder="Комментарий (необязательно)"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          style={{ ...inputStyle, height: 80, marginTop: 12 }}
+          style={{ ...inputStyle, height: 50, marginTop: 12 }}
         />
       </div>
 
@@ -326,8 +341,12 @@ export default function Checkout() {
           <b>{formatPrice(total)} ₽</b>
         </div>
 
-        <button className="checkout-button" onClick={submitOrder}>
-          Оформить заказ
+        <button
+          className="checkout-button"
+          onClick={submitOrder}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Принимаем заказ..." : "Оформить заказ"}
         </button>
       </div>
     </div>
@@ -336,6 +355,7 @@ export default function Checkout() {
 
 const inputStyle = {
   width: "100%",
+  boxSizing: "border-box",
   padding: "12px 10px",
   borderRadius: 8,
   border: "1px solid #ccc",
