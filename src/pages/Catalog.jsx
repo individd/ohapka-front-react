@@ -8,16 +8,13 @@ export default function Catalog() {
   useEffect(() => {
     fetch("https://ohapka-backend-individd.amvera.io/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data.products || []))
-      .catch(console.error);
+      .then((data) => setProducts(data.products))
+      .catch((err) => console.error(err));
   }, []);
 
   return (
     <div className="catalog-page">
-      <h2 className="catalog-title">Каталог охапок</h2>
-      <p className="catalog-subtitle">
-        Яркие, свежие и честные охапки цветов — без пафоса и флористов.
-      </p>
+      <h1 className="catalog-title">Каталог</h1>
 
       <div className="catalog-grid">
         {products.map((p) => (

@@ -5,19 +5,21 @@ const CartContext = createContext(null);
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
 
-  // Добавление товара в корзину
-  const addItem = (product, qty) => {
-    const quantity = Number(qty) || 0;
-    if (!product || quantity <= 0) return;
+  // Добавить товар (минимальный шаг)
+  const addItem = (product) => {
+    if (!product) return;
+
+    const min = Number(product.min) || 1;
+    const step = Number(product.step) || min;
 
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+      const existing = prev.find((i) => i.id === product.id);
 
       if (existing) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+        return prev.map((i) =>
+          i.id === product.id
+            ? { ...i, quantity: i.quantity + step }
+            : i
         );
       }
 
@@ -27,9 +29,9 @@ export function CartProvider({ children }) {
           id: product.id,
           name: product.name,
           price: Number(product.price) || 0,
-          quantity: quantity,
-          min: Number(product.min) || 1,
-          step: Number(product.step) || 1,
+          quantity: min,
+          min,
+          step,
           image: Array.isArray(product.images)
             ? product.images[0]
             : product.images,
@@ -38,54 +40,52 @@ export function CartProvider({ children }) {
     });
   };
 
-  // Жёсткая установка количества (для input/кнопок +/-)
+  // Установить точное количество
   const setQuantity = (id, qty) => {
     const quantity = Number(qty) || 0;
+
     setCart((prev) =>
       prev
-        .map((item) =>
-          item.id === id ? { ...item, quantity: quantity } : item
-        )
-        .filter((item) => item.quantity > 0)
+        .map((i) => (i.id === id ? { ...i, quantity } : i))
+        .filter((i) => i.quantity > 0)
     );
   };
 
-  // Инкремент/декремент с учётом шага
+  // +/- с учётом шага
   const changeQuantity = (id, delta) => {
     setCart((prev) =>
       prev
-        .map((item) => {
-          if (item.id !== id) return item;
-          const step = item.step || 1;
-          let next = item.quantity + delta * step;
+        .map((i) => {
+          if (i.id !== id) return i;
+          let next = i.quantity + delta * i.step;
           if (next < 0) next = 0;
-          return { ...item, quantity: next };
+          return { ...i, quantity: next };
         })
-        .filter((item) => item.quantity > 0)
+        .filter((i) => i.quantity > 0)
     );
   };
 
-  // Удаление товара
+  // Удалить один товар
   const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((i) => i.id !== id));
   };
 
-  // Полная очистка корзины
+  // Очистить корзину
   const clearCart = () => setCart([]);
 
-  // Итоги
-  const total = useMemo(
-    () =>
-      cart.reduce((sum, item) => {
-        const min = item.min || 1;
-        const batches = item.quantity / min;
-        return sum + batches * item.price;
-      }, 0),
+  // Количество всех цветков (не охапок)
+  const itemsCount = useMemo(
+    () => cart.reduce((sum, i) => sum + i.quantity, 0),
     [cart]
   );
 
-  const itemsCount = useMemo(
-    () => cart.reduce((sum, item) => sum + item.quantity, 0),
+  // Итоговая сумма
+  const total = useMemo(
+    () =>
+      cart.reduce((sum, item) => {
+        const batches = item.quantity / item.min;
+        return sum + batches * item.price;
+      }, 0),
     [cart]
   );
 
@@ -96,8 +96,8 @@ export function CartProvider({ children }) {
     changeQuantity,
     removeItem,
     clearCart,
-    total,
     itemsCount,
+    total,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -105,8 +105,6 @@ export function CartProvider({ children }) {
 
 export const useCart = () => {
   const ctx = useContext(CartContext);
-  if (!ctx) {
-    throw new Error("useCart must be used within CartProvider");
-  }
+  if (!ctx) throw new Error("useCart must be used inside CartProvider");
   return ctx;
 };

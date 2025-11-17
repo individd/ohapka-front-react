@@ -1,23 +1,17 @@
 import React from "react";
+import "../ui.css";
 
-export function Header() {
+export default function Header() {
   return (
-    <header style={styles.header}>
-      <h1 style={styles.title}>Просто Охапка</h1>
+    <header className="app-header">
+      <div className="app-header-left">
+        <div className="app-logo-text">ПРОСТО ОХАПКА</div>
+        <div className="app-logo-subtitle">Свежие охапки по себестоимости</div>
+      </div>
+
+      <div className="app-header-right">
+        <span className="app-header-tagline">Сегодня соберём охапку?</span>
+      </div>
     </header>
   );
 }
-
-const styles = {
-  header: {
-    padding: "16px",
-    background: "#ffffff",
-    borderBottom: "1px solid #eee",
-    textAlign: "center"
-  },
-  title: {
-    margin: 0,
-    fontSize: "20px",
-    fontWeight: 600
-  }
-};

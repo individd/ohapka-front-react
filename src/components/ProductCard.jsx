@@ -1,54 +1,65 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
+import "../ui.css";
 
 export default function ProductCard({ product }) {
-  const { cart, addItem } = useCart();
+  const { cart, addItem, changeQuantity } = useCart();
 
-  // Текущий товар в корзине
-  const inCart = cart.find((item) => item.id === product.id);
-  const currentQty = inCart ? inCart.quantity : 0;
+  const cartItem = cart.find((item) => item.id === product.id);
+  const inCart = !!cartItem;
 
-  const min = Number(product.min) || 1;
   const price = Number(product.price) || 0;
-
-  const image = Array.isArray(product.images)
-    ? product.images[0]
-    : product.images;
-
-  const handleAdd = () => {
-    addItem(product, min);
-  };
+  const min = Number(product.min) || 1;
+  const step = Number(product.step) || min;
 
   return (
-    <div className="card">
-      <div className="card-img">
-        <img src={image} alt={product.name} />
+    <div className="product-card">
+      {/* Фото */}
+      <div className="product-image-wrapper">
+        <img
+          src={Array.isArray(product.images) ? product.images[0] : product.images}
+          alt={product.name}
+          className="product-image"
+        />
       </div>
 
-      <div className="card-info">
-        <p className="card-title">{product.name}</p>
+      {/* Название */}
+      <div className="product-title">{product.name}</div>
 
-        <div className="price-pill">
-          {price.toLocaleString("ru-RU")} ₽ / {min} шт
-        </div>
+      {/* Цена-пилюля */}
+      <div className="product-price-pill">
+        {price.toLocaleString("ru-RU")} ₽ <span className="sub">за {min} шт</span>
+      </div>
 
-        {currentQty > 0 && (
-          <div
-            style={{
-              fontSize: "11px",
-              marginTop: 4,
-              color: "#007aff",
-              fontWeight: 600,
-            }}
-          >
-            В корзине: {currentQty} шт
-          </div>
-        )}
-
-        <button className="add-btn" onClick={handleAdd}>
-          В корзину
+      {/* --- Вариант C --- */}
+      {!inCart ? (
+        // ---- КНОПКА "В ОХАПКУ" ----
+        <button
+          className="add-button"
+          onClick={() => addItem(product, min)}
+        >
+          В охапку
         </button>
-      </div>
+      ) : (
+        // ---- БЛОК КОЛИЧЕСТВА ----
+        <div className="in-cart-block">
+          <div className="in-cart-label">
+            В охапке: <b>{cartItem.quantity}</b>
+          </div>
+
+          <div className="qty-controls">
+            <button className="qty-btn" onClick={() => changeQuantity(product.id, -1)}>
+              –
+            </button>
+
+            <div className="qty-value">{cartItem.quantity}</div>
+
+            <button className="qty-btn" onClick={() => changeQuantity(product.id, +1)}>
+              +
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,131 +3,156 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
 export default function CartPage() {
-  const { cart, changeQuantity, removeItem, total } = useCart();
+  const { cart, changeQuantity, total } = useCart();
   const navigate = useNavigate();
 
-  const formatPrice = (n) =>
-    n.toLocaleString("ru-RU", { minimumFractionDigits: 0 });
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    navigate("/checkout");
+  };
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 20 }}>Корзина</h2>
+    <div
+      style={{
+        paddingBottom: "140px",
+        paddingTop: "20px",
+        paddingLeft: "16px",
+        paddingRight: "16px",
+      }}
+    >
+      <h2
+        style={{
+          fontSize: "20px",
+          fontWeight: 600,
+          marginBottom: "16px",
+          paddingLeft: "12px",
+        }}
+      >
+        В охапке
+      </h2>
 
-      {cart.length === 0 && (
-        <div style={{ fontSize: 16, opacity: 0.6 }}>Корзина пуста</div>
+      {cart.length === 0 ? (
+        <p style={{ padding: "12px", fontSize: "16px", opacity: 0.6 }}>
+          Пока пусто
+        </p>
+      ) : (
+        cart.map((item) => {
+          const displayPrice =
+            (item.quantity / item.min) * item.price;
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                padding: "12px",
+                background: "#fff",
+                borderRadius: "16px",
+                boxShadow: "0 3px 10px rgba(0,0,0,0.05)",
+                marginBottom: "12px",
+              }}
+            >
+              {/* Фото */}
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{
+                  width: "64px",
+                  height: "64px",
+                  objectFit: "cover",
+                  borderRadius: "12px",
+                }}
+              />
+
+              {/* Текстовые данные */}
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: "15px",
+                    marginBottom: "3px",
+                  }}
+                >
+                  {item.name}
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "13px",
+                    opacity: 0.7,
+                    marginBottom: "6px",
+                  }}
+                >
+                  {item.quantity} шт • {displayPrice.toLocaleString("ru-RU")} ₽
+                </div>
+
+                {/* Счетчик */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <button
+                    onClick={() => changeQuantity(item.id, -1)}
+                    style={counterBtn}
+                  >
+                    –
+                  </button>
+
+                  <span style={{ minWidth: "40px", textAlign: "center" }}>
+                    {item.quantity}
+                  </span>
+
+                  <button
+                    onClick={() => changeQuantity(item.id, +1)}
+                    style={counterBtn}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })
       )}
 
-      {cart.map((item) => {
-        const batches = item.quantity / item.min;
-        const priceTotal = batches * item.price;
-
-        return (
-          <div
-            key={item.id}
-            style={{
-              borderBottom: "1px solid #eee",
-              paddingBottom: 16,
-              marginBottom: 16,
-              display: "flex",
-              gap: 12,
-            }}
-          >
-            <img
-              src={item.image}
-              alt={item.name}
-              style={{
-                width: 80,
-                height: 80,
-                objectFit: "cover",
-                borderRadius: 10,
-              }}
-            />
-
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 15, fontWeight: 600 }}>
-                {item.name}
-              </div>
-
-              <div style={{ margin: "8px 0" }}>
-                <button
-                  onClick={() => changeQuantity(item.id, -1)}
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                    background: "#f8f8f8",
-                  }}
-                >
-                  -
-                </button>
-
-                <span style={{ margin: "0 12px" }}>{item.quantity}</span>
-
-                <button
-                  onClick={() => changeQuantity(item.id, 1)}
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 6,
-                    border: "1px solid #ccc",
-                    background: "#f8f8f8",
-                  }}
-                >
-                  +
-                </button>
-              </div>
-
-              <div style={{ fontWeight: 600 }}>
-                {formatPrice(priceTotal)} ₽
-              </div>
-
-              <button
-                onClick={() => removeItem(item.id)}
-                style={{
-                  marginTop: 8,
-                  color: "#d00",
-                  border: "none",
-                  background: "transparent",
-                  fontSize: 14,
-                }}
-              >
-                Удалить
-              </button>
-            </div>
-          </div>
-        );
-      })}
-
+      {/* Нижняя панель — итог + кнопка */}
       {cart.length > 0 && (
         <div
           style={{
-            marginTop: 20,
-            padding: "16px 0",
-            borderTop: "1px solid #eee",
+            position: "fixed",
+            bottom: "70px",
+            left: 0,
+            right: 0,
+            background: "#fff",
+            padding: "16px",
+            boxShadow: "0 -4px 12px rgba(0,0,0,0.08)",
           }}
         >
           <div
             style={{
-              fontSize: 18,
-              fontWeight: 700,
-              marginBottom: 20,
+              fontSize: "18px",
+              fontWeight: 600,
+              marginBottom: "12px",
             }}
           >
-            Итого: {formatPrice(total)} ₽
+            Итого: {total.toLocaleString("ru-RU")} ₽
           </div>
 
           <button
-            onClick={() => navigate("/checkout")}
+            onClick={handleCheckout}
             style={{
               width: "100%",
-              background: "#000",
-              color: "#fff",
+              background: "#F7FF8B",
               padding: "14px 0",
-              borderRadius: 10,
-              border: "none",
-              fontSize: 16,
+              fontSize: "16px",
               fontWeight: 600,
+              borderRadius: "14px",
+              border: "1px solid #E5E86E",
             }}
           >
             Перейти к оформлению
@@ -137,3 +162,13 @@ export default function CartPage() {
     </div>
   );
 }
+
+const counterBtn = {
+  width: "34px",
+  height: "34px",
+  borderRadius: "10px",
+  border: "1px solid #eee",
+  background: "#fafafa",
+  fontSize: "20px",
+  lineHeight: "20px",
+};
