@@ -4,7 +4,7 @@ import "../ui.css";
 
 const navItems = [
   { to: "/", label: "Каталог", icon: CatalogIcon },
-  { to: "/cart", label: "Охапка", icon: CartIcon },
+  { to: "/cart", label: "Корзина", icon: CartIcon },
   { to: "/about", label: "О проекте", icon: InfoIcon },
 ];
 

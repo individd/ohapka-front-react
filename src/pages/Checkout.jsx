@@ -1,6 +1,46 @@
+
 import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import "../ui.css";
+
+function formatPhone(value) {
+  const digitsOnly = (value || "").replace(/\D/g, "");
+  let local = digitsOnly;
+
+  // Нормализуем: если начинается с 7 или 8, считаем это кодом страны
+  if (local.startsWith("7") || local.startsWith("8")) {
+    local = local.slice(1);
+  }
+
+  // Оставляем максимум 10 цифр локального номера
+  local = local.slice(0, 10);
+
+  if (!local.length) return "";
+
+  let res = "+7";
+
+  if (local.length <= 3) {
+    return res + " (" + local;
+  }
+
+  res += " (" + local.slice(0, 3) + ")";
+
+  if (local.length <= 6) {
+    return res + " " + local.slice(3);
+  }
+
+  res += " " + local.slice(3, 6);
+
+  if (local.length <= 8) {
+    return res + "-" + local.slice(6);
+  }
+
+  res += "-" + local.slice(6, 8) + "-" + local.slice(8, 10);
+
+  return res;
+}
 
 export default function Checkout() {
   const { cart, total, clearCart } = useCart();
@@ -69,14 +109,35 @@ export default function Checkout() {
     n.toLocaleString("ru-RU", { minimumFractionDigits: 0 });
 
   async function submitOrder() {
-    if (!name || !phone || !address || !date || !selectedSlot) {
+    // Защита от выбора прошедшей даты (например, если min обойти)
+    if (date < today) {
+      setDate(today);
+      alert("Нельзя выбрать прошедшую дату доставки");
+      return;
+    }
+    if (!name || !address || !date || !selectedSlot) {
       alert("Заполните все обязательные поля");
       return;
     }
 
+    // Валидация телефона: минимум 10 цифр локального номера
+    const digitsPhone = (phone || "").replace(/\D/g, "");
+    let localPhone = digitsPhone;
+
+    if (localPhone.startsWith("7") || localPhone.startsWith("8")) {
+      localPhone = localPhone.slice(1);
+    }
+
+    if (localPhone.length < 10) {
+      alert("Введите корректный номер телефона");
+      return;
+    }
+
+    const normalizedPhone = "+7" + localPhone.slice(0, 10);
+
     const orderData = {
       name,
-      phone,
+      phone: normalizedPhone,
       address,
       date,
       slot: selectedSlot,
@@ -115,106 +176,160 @@ export default function Checkout() {
   }
 
   return (
-    <div style={{ padding: 16, paddingBottom: 100 }}>
-      <h2 style={{ marginBottom: 20 }}>Оформление заказа</h2>
+    <div style={{ paddingBottom: 130 }}>
 
-      {/* Имя */}
-      <input
-        type="text"
-        placeholder="Имя"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={inputStyle}
-      />
+      <div style={{ padding: 16 }}>
+        {/* Имя */}
+        <input
+          type="text"
+          placeholder="Имя"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={inputStyle}
+        />
 
-      {/* Телефон */}
-      <input
-        type="tel"
-        placeholder="Телефон"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        style={inputStyle}
-      />
+        {/* Телефон */}
+        <input
+          type="tel"
+          placeholder="Телефон"
+          value={formatPhone(phone)}
+          onChange={(e) => {
+            const digits = e.target.value.replace(/\D/g, "");
+            setPhone(digits);
+          }}
+          style={inputStyle}
+        />
 
-      {/* Адрес */}
-      <input
-        type="text"
-        placeholder="Адрес доставки"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        style={inputStyle}
-      />
+        {/* Адрес */}
+        <input
+          type="text"
+          placeholder="Адрес доставки"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          style={inputStyle}
+        />
 
-      {/* Дата */}
-      <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
-        Дата доставки:
-      </label>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        style={inputStyle}
-      />
-
-      {/* Слоты */}
-      <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
-        Время доставки:
-      </label>
-
-      {slots.length === 0 && (
-        <div style={{ opacity: 0.6, marginBottom: 10 }}>
-          На выбранную дату нет доступных слотов
-        </div>
-      )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {slots.map((slot) => (
+        {/* Дата */}
+        <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
+          Дата доставки:
+        </label>
+        <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
           <button
-            key={slot.label}
-            onClick={() => setSelectedSlot(slot.label)}
+            type="button"
+            onClick={() => {
+              const d = new Date();
+              setDate(d.toISOString().split("T")[0]);
+            }}
             style={{
               padding: "10px 12px",
               borderRadius: 8,
-              border: selectedSlot === slot.label ? "2px solid #000" : "1px solid #ccc",
-              background: selectedSlot === slot.label ? "#000" : "#fff",
-              color: selectedSlot === slot.label ? "#fff" : "#000",
-              textAlign: "left",
+              border: date === new Date().toISOString().split("T")[0] ? "2px solid #F7FF8B" : "1px solid #E0E0E0",
+              background: date === new Date().toISOString().split("T")[0] ? "#F7FF8B" : "#FFFFFF",
+              color: "#111",
               fontSize: 15,
+              flex: 1,
             }}
           >
-            {slot.label}
+            Сегодня
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => {
+              const d = new Date();
+              d.setDate(d.getDate() + 1);
+              setDate(d.toISOString().split("T")[0]);
+            }}
+            style={{
+              padding: "10px 12px",
+              borderRadius: 8,
+              border: date === (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })() ? "2px solid #F7FF8B" : "1px solid #E0E0E0",
+              background: date === (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; })() ? "#F7FF8B" : "#FFFFFF",
+              color: "#111",
+              fontSize: 15,
+              flex: 1,
+            }}
+          >
+            Завтра
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const d = new Date();
+              d.setDate(d.getDate() + 2);
+              setDate(d.toISOString().split("T")[0]);
+            }}
+            style={{
+              padding: "10px 12px",
+              borderRadius: 8,
+              border: date === (() => { const d = new Date(); d.setDate(d.getDate() + 2); return d.toISOString().split("T")[0]; })() ? "2px solid #F7FF8B" : "1px solid #E0E0E0",
+              background: date === (() => { const d = new Date(); d.setDate(d.getDate() + 2); return d.toISOString().split("T")[0]; })() ? "#F7FF8B" : "#FFFFFF",
+              color: "#111",
+              fontSize: 15,
+              flex: 1,
+            }}
+          >
+            Послезавтра
+          </button>
+        </div>
+        <input
+          type="date"
+          value={date}
+          min={today}
+          onChange={(e) => setDate(e.target.value)}
+          style={{ ...inputStyle, appearance: "none" }}
+        />
+
+        {/* Слоты */}
+        <label style={{ fontSize: 14, marginTop: 12, display: "block" }}>
+          Слот для доставки:
+        </label>
+
+        {slots.length === 0 && (
+          <div style={{ opacity: 0.6, marginBottom: 10 }}>
+            На выбранную дату нет доступных слотов
+          </div>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {slots.map((slot) => (
+            <button
+              key={slot.label}
+              onClick={() => setSelectedSlot(slot.label)}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 8,
+                border: selectedSlot === slot.label ? "2px solid #F7FF8B" : "1px solid #E0E0E0",
+                background: selectedSlot === slot.label ? "#F7FF8B" : "#FFFFFF",
+                color: "#111",
+                textAlign: "left",
+                fontSize: 15,
+              }}
+            >
+              {slot.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Комментарий */}
+        <textarea
+          placeholder="Комментарий (необязательно)"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          style={{ ...inputStyle, height: 80, marginTop: 12 }}
+        />
       </div>
 
-      {/* Комментарий */}
-      <textarea
-        placeholder="Комментарий (необязательно)"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        style={{ ...inputStyle, height: 80, marginTop: 12 }}
-      />
+      {/* Фиксированный нижний бар с итогом и кнопкой */}
+      <div className="bottom-action-bar">
+        <div className="total-block">
+          <span>Итого:</span>
+          <b>{formatPrice(total)} ₽</b>
+        </div>
 
-      {/* Итог */}
-      <h3 style={{ marginTop: 20 }}>Итого: {formatPrice(total)} ₽</h3>
-
-      {/* Кнопка оформить */}
-      <button
-        onClick={submitOrder}
-        style={{
-          width: "100%",
-          background: "#000",
-          color: "#fff",
-          padding: "14px 0",
-          borderRadius: 10,
-          border: "none",
-          fontSize: 16,
-          fontWeight: 600,
-          marginTop: 20,
-        }}
-      >
-        Оформить заказ
-      </button>
+        <button className="checkout-button" onClick={submitOrder}>
+          Оформить заказ
+        </button>
+      </div>
     </div>
   );
 }

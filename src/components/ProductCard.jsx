@@ -13,7 +13,7 @@ export default function ProductCard({ product }) {
   const step = Number(product.step) || min;
 
   return (
-    <div className="product-card">
+    <div className="product-card" style={{ overflow: "hidden" }}>
       {/* Фото */}
       <div className="product-image-wrapper">
         <img
@@ -42,7 +42,15 @@ export default function ProductCard({ product }) {
         </button>
       ) : (
         // ---- БЛОК КОЛИЧЕСТВА ----
-        <div className="in-cart-block">
+        <div 
+          className="in-cart-block"
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            borderRadius: "18px",
+            overflow: "hidden"
+          }}
+        >
           <div className="in-cart-label">
             В охапке: <b>{cartItem.quantity}</b>
           </div>

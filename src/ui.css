@@ -36,7 +36,7 @@
   padding: 4px 10px;
   border-radius: 14px;
   background: #fff;
-  border: 1.5px solid #F7FF8B;
+  border: 1.5px solid #FAFA33;
   font-size: 13px;
   font-weight: 600;
   color: #111;
@@ -46,7 +46,7 @@
 /* Кнопка "В охапку" */
 .add-btn {
   width: 100%;
-  background: #F7FF8B;
+  background: #FAFA33;
   border: none;
   border-radius: 14px;
   padding: 10px 14px;
@@ -86,7 +86,7 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  border: 1.5px solid #F7FF8B;
+  border: 1.5px solid #FAFA33;
   background: #fff;
   font-size: 20px;
   font-weight: 700;
@@ -124,7 +124,7 @@
 }
 
 :root {
-  --accent: #f7ff8b;
+  --accent: #FAFA33;
   --accent-text: #111111;
   --bg-main: #ffffff;
   --text-main: #111111;
@@ -255,19 +255,19 @@ body {
 /* Название */
 .product-title {
   margin-top: 10px;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 500;
   color: #111;
 }
 
 /* Пилюля */
 .product-price-pill {
-  margin-top: 8px;
+  margin-top: 1px;
   display: inline-block;
-  background: #f7ff8b;
+  background: #FAFA33;
   padding: 6px 10px;
   border-radius: 30px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -278,12 +278,12 @@ body {
 
 /* Кнопка В охапку */
 .add-button {
-  margin-top: 12px;
+  margin-top: 2px;
   width: 100%;
-  background: #f7ff8b;
+  background: #FAFA33;
   border-radius: 14px;
   padding: 12px 0;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: #111;
   border: none;
@@ -291,7 +291,7 @@ body {
 }
 
 .add-button:hover {
-  background: #e4f06f;
+  background: #FAFA33;
 }
 
 /* В охапке блок */
@@ -299,7 +299,7 @@ body {
   margin-top: 10px;
   width: 100%;
   background: #f7ff8b55;
-  border: 1px solid #f7ff8b;
+  border: 1px solid #FAFA33;
   padding: 12px;
   border-radius: 16px;
   text-align: center;
@@ -325,7 +325,7 @@ body {
   border-radius: 50%;
   border: none;
   background: #fff;
-  border: 1px solid #f7ff8b;
+  border: 1px solid #FAFA33;
   font-size: 22px;
   font-weight: 600;
   cursor: pointer;
@@ -336,4 +336,190 @@ body {
   font-weight: 600;
   min-width: 40px;
   text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.field label {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #F7FF8B;
+}
+
+.field textarea {
+  min-height: 70px;
+  resize: none;
+}
+
+/* Нижний фиксированный бар */
+.bottom-action-bar {
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 999;
+}
+
+.checkout-button {
+  background: #F7FF8B;
+  color: #111;
+  padding: 14px;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+}
+
+.about-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 16px 96px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  color: #111;
+}
+
+.about-hero {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 20px 20px 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #f7ff8b;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.about-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.about-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.about-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 20px 0 24px;
+}
+
+.about-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 14px 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.about-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-size: 18px;
+  background: #f7ff8b;
+}
+
+.about-card h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.about-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.about-block {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.035);
+  margin-bottom: 14px;
+}
+
+.about-block-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.about-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #555;
+}
+
+.about-list li + li {
+  margin-top: 4px;
+}
+
+.about-footer-text {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #777;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .about-wrapper {
+    padding: 12px 12px 88px;
+  }
+
+  .about-title {
+    font-size: 20px;
+  }
+
+  .about-cards {
+    grid-template-columns: 1fr;
+  }
 }

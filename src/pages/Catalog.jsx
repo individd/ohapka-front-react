@@ -14,7 +14,7 @@ export default function Catalog() {
 
   return (
     <div className="catalog-page">
-      <h1 className="catalog-title">Каталог</h1>
+
 
       <div className="catalog-grid">
         {products.map((p) => (
