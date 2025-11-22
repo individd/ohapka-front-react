@@ -12,104 +12,49 @@ export default function CartPage() {
   };
 
   return (
-    <div
-      style={{
-        paddingBottom: "140px",
-        paddingTop: "20px",
-        paddingLeft: "16px",
-        paddingRight: "16px",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "20px",
-          fontWeight: 600,
-          marginBottom: "16px",
-          paddingLeft: "12px",
-        }}
-      >
-        В охапке
-      </h2>
+    <div className="checkout-container">
+      <h2 className="section-title">КОРЗИНА</h2>
 
       {cart.length === 0 ? (
         <p style={{ padding: "12px", fontSize: "16px", opacity: 0.6 }}>
-          Пока пусто
+          ПУСТО
         </p>
       ) : (
         cart.map((item) => {
-          const displayPrice =
-            (item.quantity / item.min) * item.price;
+          const displayPrice = (item.quantity / item.min) * item.price;
+          const imageSrc = (Array.isArray(item.image) ? item.image[0] : item.image) || "https://via.placeholder.com/300?text=No+Image";
 
           return (
-            <div
-              key={item.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px",
-                background: "#fff",
-                borderRadius: "16px",
-                boxShadow: "0 3px 10px rgba(0,0,0,0.05)",
-                marginBottom: "12px",
-              }}
-            >
-              {/* Фото */}
+            <div key={item.id} className="cart-item">
               <img
-                src={item.image}
+                src={imageSrc}
                 alt={item.name}
-                style={{
-                  width: "64px",
-                  height: "64px",
-                  objectFit: "cover",
-                  borderRadius: "12px",
-                }}
+                className="cart-item-image"
               />
 
-              {/* Текстовые данные */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    fontWeight: 600,
-                    fontSize: "15px",
-                    marginBottom: "3px",
-                  }}
-                >
-                  {item.name}
+              <div className="cart-item-info">
+                <div>
+                  <div className="cart-item-title">{item.name}</div>
+                  <div className="cart-item-meta">
+                    {item.quantity} шт • {displayPrice.toLocaleString("ru-RU")} ₽
+                  </div>
                 </div>
 
-                <div
-                  style={{
-                    fontSize: "13px",
-                    opacity: 0.7,
-                    marginBottom: "6px",
-                  }}
-                >
-                  {item.quantity} шт • {displayPrice.toLocaleString("ru-RU")} ₽
-                </div>
-
-                {/* Счетчик */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
+                <div className="cart-item-controls">
                   <button
                     onClick={() => changeQuantity(item.id, -1)}
-                    style={counterBtn}
+                    className="cart-qty-btn"
                   >
                     –
                   </button>
 
-                  <span style={{ minWidth: "40px", textAlign: "center" }}>
+                  <span style={{ minWidth: "30px", textAlign: "center", fontWeight: "700" }}>
                     {item.quantity}
                   </span>
 
                   <button
                     onClick={() => changeQuantity(item.id, +1)}
-                    style={counterBtn}
+                    className="cart-qty-btn"
                   >
                     +
                   </button>
@@ -120,42 +65,18 @@ export default function CartPage() {
         })
       )}
 
-      {/* Нижняя панель — итог + кнопка */}
       {cart.length > 0 && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "70px",
-            left: 0,
-            right: 0,
-            background: "#fff",
-            padding: "16px",
-            boxShadow: "0 -4px 12px rgba(0,0,0,0.08)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "18px",
-              fontWeight: 600,
-              marginBottom: "12px",
-            }}
-          >
-            Итого: {total.toLocaleString("ru-RU")} ₽
+        <div style={{ marginTop: 40, marginBottom: 40 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, fontWeight: 900, fontSize: 20 }}>
+            <span>ИТОГО:</span>
+            <span>{total.toLocaleString("ru-RU")} ₽</span>
           </div>
 
           <button
+            className="btn-primary"
             onClick={handleCheckout}
-            style={{
-              width: "100%",
-              background: "#F7FF8B",
-              padding: "14px 0",
-              fontSize: "16px",
-              fontWeight: 600,
-              borderRadius: "14px",
-              border: "1px solid #E5E86E",
-            }}
           >
-            Перейти к оформлению
+            ОФОРМИТЬ
           </button>
         </div>
       )}

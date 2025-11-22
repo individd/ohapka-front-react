@@ -3,71 +3,47 @@ import { useCart } from "../context/CartContext";
 import "../ui.css";
 
 export default function ProductCard({ product }) {
-  const { cart, addItem, changeQuantity } = useCart();
+  const { addItem, cart, changeQuantity } = useCart();
+
+  // product: { id, name, price, images, ... }
+  // Fix: use 'images' property and handle array/string
+  const imageSrc = (Array.isArray(product.images) ? product.images[0] : product.images) || "https://via.placeholder.com/300?text=No+Image";
 
   const cartItem = cart.find((item) => item.id === product.id);
-  const inCart = !!cartItem;
+  const quantity = cartItem ? cartItem.quantity : 0;
 
-  const price = Number(product.price) || 0;
-  const min = Number(product.min) || 1;
-  const step = Number(product.step) || min;
+  const handleAdd = () => {
+    addItem(product);
+  };
 
   return (
-    <div className="product-card" style={{ overflow: "hidden" }}>
-      {/* Фото */}
+    <div className="product-card">
       <div className="product-image-wrapper">
-        <img
-          src={Array.isArray(product.images) ? product.images[0] : product.images}
-          alt={product.name}
-          className="product-image"
-        />
+        <img src={imageSrc} alt={product.name} className="product-image" />
       </div>
 
-      {/* Название */}
-      <div className="product-title">{product.name}</div>
-
-      {/* Цена-пилюля */}
-      <div className="product-price-pill">
-        {price.toLocaleString("ru-RU")} ₽ <span className="sub">за {min} шт</span>
+      <div className="product-info">
+        <div className="product-title">{product.name}</div>
+        <div className="product-meta">{product.min} шт. в охапке</div>
+        <div className="product-price">{product.price} ₽</div>
       </div>
 
-      {/* --- Вариант C --- */}
-      {!inCart ? (
-        // ---- КНОПКА "В ОХАПКУ" ----
-        <button
-          className="add-button"
-          onClick={() => addItem(product, min)}
-        >
-          В охапку
-        </button>
-      ) : (
-        // ---- БЛОК КОЛИЧЕСТВА ----
-        <div 
-          className="in-cart-block"
-          style={{
-            width: "100%",
-            boxSizing: "border-box",
-            borderRadius: "18px",
-            overflow: "hidden"
-          }}
-        >
-          <div className="in-cart-label">
-            В охапке: <b>{cartItem.quantity}</b>
+      <div className="card-footer">
+        {quantity === 0 ? (
+          <button className="btn-lemon" onClick={handleAdd}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        ) : (
+          <div className="in-cart-block">
+            <button className="qty-btn-mini" onClick={() => changeQuantity(product.id, -1)}>-</button>
+            <span className="qty-val-mini">{quantity}</span>
+            <button className="qty-btn-mini" onClick={() => changeQuantity(product.id, 1)}>+</button>
           </div>
-
-          <div className="qty-controls">
-            <button className="qty-btn" onClick={() => changeQuantity(product.id, -1)}>
-              –
-            </button>
-
-            <div className="qty-value">{cartItem.quantity}</div>
-
-            <button className="qty-btn" onClick={() => changeQuantity(product.id, +1)}>
-              +
-            </button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -1,62 +1,71 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../ui.css";
 
 export default function About() {
+  const navigate = useNavigate();
+
   return (
     <div className="about-wrapper">
       <div className="about-hero">
-        <div className="about-badge">Сервис охапок по себестоимости</div>
-        <h2 className="about-title">О проекте</h2>
+        <h1 className="about-title-large">Цветы без мишуры</h1>
+        <p className="about-subtitle">Только свежие охапки. Никакой упаковки.</p>
       </div>
 
-      <div className="about-cards">
-        <div className="about-card">
-          <div className="about-card-icon">🌿</div>
-          <h3>Почему проще?</h3>
-          <p>Убрали лишние услуги и украшения. Оставили только охапки свежих цветов.</p>
+      <div className="about-manifesto">
+        <p>
+          «Мы верим, что цветы прекрасны сами по себе. Им не нужны ленты и пёстрые упаковочные пленки.
+          Мы убрали всё лишнее, чтобы вы покупали только свежесть и красоту»
+        </p>
+      </div>
+
+      <div className="about-grid">
+        <div className="about-feature">
+          <div className="about-feature-icon">🌿</div>
+          <div className="about-feature-content">
+            <h3>Просто</h3>
+            <p>Никаких салонов и флористов. Только свежие цветы.</p>
+          </div>
         </div>
-
-        <div className="about-card">
-          <div className="about-card-icon">💸</div>
-          <h3>Почему дешевле?</h3>
-          <p>Закупаем напрямую у поставщиков. Из-за больших объемов получаем выгодные цены для себя и для вас</p>
+        <div className="about-feature">
+          <div className="about-feature-icon">💸</div>
+          <div className="about-feature-content">
+            <h3>Низкие цены</h3>
+            <p>Нам не нужно содержать штат людей, долго хранить цветы и платить за аренду магазинов.</p>
+          </div>
         </div>
-
-        <div className="about-card">
-          <div className="about-card-icon">⚡️</div>
-          <h3>Почему у нас?</h3>
-          <p>Мы хотим, чтобы вы в центр ставили цветы, а не упаковку</p>
+        <div className="about-feature">
+          <div className="about-feature-icon">⚡️</div>
+          <div className="about-feature-content">
+            <h3>Свежо</h3>
+            <p>Поставки каждый день. Цветы не стоят в витринах, ожидая покупателя.</p>
+          </div>
         </div>
       </div>
 
-      <div className="about-block">
-        <h3 className="about-block-title">Как это работает</h3>
-        <ul className="about-list">
-          <li>Выбираете охапку и удобный интервал доставки.</li>
-          <li>Собираем заказ только из свежих поставок.</li>
-          <li>Курьер привозит охапку без лишних услуг.</li>
-        </ul>
+      <div className="journey-section">
+        <h3 className="journey-title">Путь вашей охапки</h3>
+        <div className="journey-steps">
+          <div className="journey-step">
+            <div className="journey-icon">1</div>
+            <span className="journey-label">Заказ</span>
+          </div>
+          <div className="journey-step">
+            <div className="journey-icon">2</div>
+            <span className="journey-label">Сборка</span>
+          </div>
+          <div className="journey-step">
+            <div className="journey-icon">3</div>
+            <span className="journey-label">Ваши руки</span>
+          </div>
+        </div>
       </div>
 
-      <div className="about-block">
-        <h3 className="about-block-title">Доставка и оплата</h3>
-        <ul className="about-list">
-          <li>Привозим в выбранное окно времени.</li>
-          <li>Оплата — онлайн внутри Telegram.</li>
-          <li>Если что-то меняется — заранее пишем в чат.</li>
-        </ul>
-      </div>
+      <button className="btn-primary" onClick={() => navigate("/")}>
+        ВЫБРАТЬ ОХАПКУ
+      </button>
 
-      <div className="about-block">
-        <h3 className="about-block-title">Наши правила</h3>
-        <ul className="about-list">
-          <li>Никаких скрытых «от ...» — честная финальная цена.</li>
-          <li>Только живые цветы, которые приятно подарить.</li>
-          <li>Если что‑то пошло не так — исправляем.</li>
-        </ul>
-      </div>
-
-      <p className="about-footer-text">Мы за простоту и свежесть. Без флористов и упаковки.</p>
+      <div style={{ height: 40 }}></div>
     </div>
   );
 }
